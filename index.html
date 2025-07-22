@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>For the Love of My Life</title>
   <link rel="preload" href="SFPRODISPLAYMEDIUM.ttf" as="font" type="font/ttf" crossorigin>
   <style>
@@ -11,40 +11,50 @@
       src: url('SFPRODISPLAYMEDIUM.ttf') format('truetype');
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      padding: 0;
       background: black;
-      overflow: hidden;
       font-family: 'SF Pro Display', sans-serif;
       color: white;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #canvas-wrapper {
+      width: 100%;
+      max-width: 100vmin;
+      aspect-ratio: 1 / 1;
+      position: relative;
     }
 
     #game {
-      width: 100vw;
-      height: 100vw;
-      max-width: 400px;
-      max-height: 400px;
-      display: block;
-      margin: 20px auto 10px;
+      width: 100%;
+      height: 100%;
       image-rendering: pixelated;
+      display: block;
     }
 
     #mobile-controls {
       display: flex;
-      justify-content: center;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 10px;
-      max-width: 400px;
-      margin: 0 auto;
+      margin: 10px 0;
     }
 
     #mobile-controls button {
-      font-size: 20px;
-      padding: 10px 15px;
-      border-radius: 8px;
+      font-size: 1.2rem;
+      padding: 10px 20px;
       border: none;
+      border-radius: 10px;
       background-color: pink;
       color: white;
       font-weight: bold;
@@ -56,7 +66,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0, 0, 0, 0.85);
       display: none;
       flex-direction: column;
       align-items: center;
@@ -66,18 +76,17 @@
     }
 
     #carousel {
-      display: flex;
-      overflow: hidden;
       width: 90vw;
       max-width: 360px;
-      height: auto;
+      overflow: hidden;
+      border-radius: 12px;
       margin-bottom: 20px;
     }
 
     #carousel img {
       width: 100%;
-      border-radius: 12px;
-      animation: fade 1.5s ease-in-out;
+      display: block;
+      animation: fade 1s ease-in-out;
     }
 
     @keyframes fade {
@@ -88,15 +97,19 @@
     .popup {
       background: white;
       color: black;
-      padding: 20px;
+      padding: 15px 20px;
       border-radius: 12px;
       font-size: 18px;
       max-width: 90vw;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <canvas id="game" width="400" height="400"></canvas>
+
+  <div id="canvas-wrapper">
+    <canvas id="game" width="400" height="400"></canvas>
+  </div>
 
   <div id="mobile-controls">
     <button onclick="move('up')">↑</button>
@@ -107,7 +120,7 @@
 
   <div id="finalMessage">
     <div id="carousel">
-      <img id="carouselImage" src="img1.jpg" alt="Love Memory" />
+      <img id="carouselImage" src="img1.jpg" alt="Love Memory">
     </div>
     <div class="popup">This is an appreciation for my love. Thank you.</div>
   </div>
@@ -117,18 +130,6 @@
 
   <script src="notehunt.js"></script>
   <script>
-    const canvas = document.getElementById("game");
-    const ctx = canvas.getContext("2d");
-
-    function resizeCanvas() {
-      const size = Math.min(window.innerWidth, 400);
-      canvas.style.width = `${size}px`;
-      canvas.style.height = `${size}px`;
-    }
-
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-
     function move(dir) {
       const keyboardMap = {
         up: 'ArrowUp',
@@ -139,13 +140,11 @@
       document.dispatchEvent(new KeyboardEvent('keydown', { key: keyboardMap[dir] }));
     }
 
-    // Handle final popup trigger from game when all notes are collected:
     function showFinalPopup() {
       document.getElementById('finalMessage').style.display = 'flex';
       document.getElementById('ambient').pause();
       document.getElementById('finalSong').play();
 
-      // Carousel cycle logic
       const images = ['img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 'img5.jpg', 'img6.jpg'];
       let index = 0;
       const carousel = document.getElementById('carouselImage');
@@ -156,7 +155,6 @@
       }, 2000);
     }
 
-    // Expose showFinalPopup to global so notehunt.js can call it
     window.showFinalPopup = showFinalPopup;
   </script>
 </body>
