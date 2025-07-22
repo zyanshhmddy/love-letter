@@ -1,29 +1,9 @@
+
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const gridSize = 8;
-
-// Dynamically set canvas width and height based on CSS size for responsiveness
-function resizeCanvas() {
-  canvas.width = canvas.clientWidth;
-  canvas.height = canvas.clientWidth; // keep square
-}
-resizeCanvas();
-
-// Recalculate tileSize anytime canvas resizes
-let tileSize = canvas.width / gridSize;
-
-// Update tileSize and canvas size on window resize
-window.addEventListener("resize", () => {
-  resizeCanvas();
-  tileSize = canvas.width / gridSize;
-  // Update draw positions to match new tileSize
-  drawX = player.x * tileSize;
-  drawY = player.y * tileSize;
-  targetX = drawX;
-  targetY = drawY;
-  drawGrid();
-});
+const tileSize = canvas.width / gridSize;
 
 let notesCollected = 0;
 
@@ -32,11 +12,11 @@ const ambientMusic = document.getElementById("ambientMusic");
 const messageOverlay = document.getElementById("messageOverlay");
 const photoPopup = document.getElementById("photoPopup");
 const photoImg = document.getElementById("photoImage");
-const closePopupBtn = document.getElementById("closeButton");
+const closePopupBtn = document.getElementById("closeButton"); // fixed ID
 const blurOverlay = document.getElementById("blurOverlay");
 const gameContainer = document.getElementById("gameContainer");
 
-let gamePaused = false;
+let gamePaused = false; // track if message/photo is showing
 
 const messages = [
   "you're my favorite person to get lost with.",
@@ -47,24 +27,29 @@ const messages = [
   "forever with you sounds perfect to me."
 ];
 
+// Player logical position (grid coords)
 let player = { x: 0, y: 0 };
 
-// Initial draw positions based on tileSize
+// For smooth animation - actual pixel position of player
 let drawX = player.x * tileSize;
 let drawY = player.y * tileSize;
 let targetX = drawX;
 let targetY = drawY;
 
+// Speed of sliding animation (pixels per frame)
 const slideSpeed = 8;
 
+// Heart image for player
 const heartImg = new Image();
 heartImg.src = "heart.png";
 
 heartImg.onload = () => {
+  // Start drawing after heart image loads
   drawGrid();
   requestAnimationFrame(animate);
 };
 
+// Helper to get random position excluding some
 function getRandomPosition(excludePositions) {
   while (true) {
     const pos = { x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize) };
@@ -72,6 +57,7 @@ function getRandomPosition(excludePositions) {
   }
 }
 
+// Generate all note positions avoiding player start
 const occupiedPositions = [{ x: player.x, y: player.y }];
 const allNotePositions = [];
 for (let i = 0; i < 6; i++) {
@@ -80,6 +66,7 @@ for (let i = 0; i < 6; i++) {
   allNotePositions.push(pos);
 }
 
+// Current note index & note data
 let currentNoteIndex = 0;
 let currentNote = {
   x: allNotePositions[0].x,
@@ -88,6 +75,7 @@ let currentNote = {
   collected: false
 };
 
+// Draw grid and note (yellow circle)
 function drawGrid() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -111,12 +99,15 @@ function drawGrid() {
   }
 }
 
+// Draw player image at current drawn position (for sliding)
 function drawPlayerImage() {
   ctx.drawImage(heartImg, drawX, drawY, tileSize, tileSize);
 }
 
+// Variables to control sliding animation
 let sliding = false;
 
+// Animate function called every frame
 function animate() {
   if (sliding) {
     if (Math.abs(drawX - targetX) < slideSpeed) {
@@ -142,6 +133,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+// Show image first (fade+zoom), then show blur+message+x button
 function showMessageAndPhoto(text, imgSrc) {
   gamePaused = true;
 
@@ -162,13 +154,14 @@ function showMessageAndPhoto(text, imgSrc) {
 
     setTimeout(() => {
       blurOverlay.classList.add("visible");
-      document.getElementById("messageText").textContent = text;
+      document.getElementById("messageText").textContent = text; // set text inside <p>
       messageOverlay.classList.add("visible");
       closePopupBtn.classList.add("visible");
-    }, 400);
+    }, 800);
   };
 }
 
+// Hide popup and resume game, or show final appreciation if done
 function hideMessageAndPhoto() {
   messageOverlay.classList.remove("visible");
   closePopupBtn.classList.remove("visible");
@@ -185,6 +178,7 @@ function hideMessageAndPhoto() {
   }
 }
 
+// Close button event
 closePopupBtn.addEventListener("click", () => {
   hideMessageAndPhoto();
 
@@ -200,6 +194,7 @@ closePopupBtn.addEventListener("click", () => {
   }
 });
 
+// Check if player collected note
 function collectNotes() {
   if (gamePaused) return;
   if (!currentNote.collected && player.x === currentNote.x && player.y === currentNote.y) {
@@ -208,6 +203,7 @@ function collectNotes() {
   }
 }
 
+// Move player with smooth sliding
 function movePlayer(dx, dy) {
   if (gamePaused || sliding) return;
 
@@ -225,6 +221,7 @@ function movePlayer(dx, dy) {
   }
 }
 
+// Keyboard input
 document.addEventListener("keydown", e => {
   if (gamePaused || sliding) return;
   switch (e.key) {
@@ -235,6 +232,7 @@ document.addEventListener("keydown", e => {
   }
 });
 
+// Fix mobile button event listeners to handle both touch and click
 function bindMobileButton(id, dx, dy) {
   const btn = document.getElementById(id);
   if (!btn) return;
@@ -250,14 +248,18 @@ function bindMobileButton(id, dx, dy) {
   });
 }
 
+// Bind mobile control buttons
 bindMobileButton("upBtn", 0, -1);
 bindMobileButton("downBtn", 0, 1);
 bindMobileButton("leftBtn", -1, 0);
 bindMobileButton("rightBtn", 1, 0);
 
+// Prevent scrolling on touch devices
 window.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
 
-// Final appreciation carousel
+// --- Final appreciation popup elements ---
+
+// Create carousel container and elements dynamically
 const carouselContainer = document.createElement("div");
 carouselContainer.style.position = "fixed";
 carouselContainer.style.top = "50%";
@@ -268,22 +270,21 @@ carouselContainer.style.border = "3px solid pink";
 carouselContainer.style.borderRadius = "15px";
 carouselContainer.style.padding = "20px";
 carouselContainer.style.zIndex = "1000";
-carouselContainer.style.width = "90vw";
-carouselContainer.style.maxWidth = "300px";
+carouselContainer.style.width = "300px";
 carouselContainer.style.textAlign = "center";
 carouselContainer.style.color = "white";
 carouselContainer.style.display = "none";
 carouselContainer.style.userSelect = "none";
 
 const carouselImage = document.createElement("img");
-carouselImage.style.width = "100%";
-carouselImage.style.height = "auto";
+carouselImage.style.width = "250px";
+carouselImage.style.height = "250px";
 carouselImage.style.borderRadius = "12px";
 carouselImage.style.objectFit = "cover";
 carouselImage.style.marginBottom = "15px";
 
 const carouselText = document.createElement("p");
-carouselText.textContent = "this is an appreciation for you. thank you so much for being here. i love you";
+carouselText.textContent = "This is an appreciation for my love. Thank you.";
 carouselText.style.fontSize = "18px";
 carouselText.style.marginBottom = "15px";
 
@@ -308,4 +309,36 @@ let carouselInterval;
 function startCarousel() {
   carouselImage.src = `img${carouselIndex + 1}.jpg`;
   carouselInterval = setInterval(() => {
-    carouselIndex = (carouselIndex
+    carouselIndex = (carouselIndex + 1) % 6;
+    carouselImage.src = `img${carouselIndex + 1}.jpg`;
+  }, 3000); // change image every 3 seconds
+}
+
+function stopCarousel() {
+  clearInterval(carouselInterval);
+}
+
+// Show final popup with blur overlay
+function showFinalAppreciation() {
+  blurOverlay.style.display = "block";
+  blurOverlay.style.backdropFilter = "blur(10px) brightness(0.4)";
+  carouselContainer.style.display = "block";
+  startCarousel();
+  gamePaused = true; // pause game input
+}
+
+// Hide final popup and remove blur
+function hideFinalAppreciation() {
+  blurOverlay.style.display = "none";
+  blurOverlay.style.backdropFilter = "none";
+  carouselContainer.style.display = "none";
+  stopCarousel();
+  gamePaused = false;
+  // Optionally reset the game or leave as is
+}
+
+// Close final popup button event
+closeFinalBtn.addEventListener("click", () => {
+  hideFinalAppreciation();
+});
+
