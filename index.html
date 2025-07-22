@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>for the love of my life</title>
+  <link rel="preload" href="SFPRODISPLAYMEDIUM.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+  <style>
+    @font-face {
+      font-family: 'SF Pro Display';
+      src: url('SFPRODISPLAYMEDIUM.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      margin: 0;
+      background: #1a1a1a;
+      color: white;
+      font-family: 'SF Pro Display', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    h1 {
+      margin-top: 10px;
+      font-weight: normal;
+    }
+
+    #gameContainer {
+      position: relative;
+    }
+
+    canvas {
+      background: #2e2e2e;
+      display: block;
+      margin: 0 auto;
+      border: 3px solid pink;
+    }
+
+    #photoPopup {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease, transform 1s ease;
+      z-index: 10;
+    }
+
+    #photoPopup.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #photoPopup img {
+      max-width: 220px;
+      max-height: 220px;
+      display: block;
+      border-radius: 10px;
+    }
+
+    #blurOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(5px) brightness(0.6);
+      z-index: 15;
+      display: none;
+    }
+
+    #messageOverlay {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 24px;
+      text-align: center;
+      max-width: 80vw;
+      z-index: 20;
+      display: none;
+    }
+
+    #closeButton {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      background: pink;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      z-index: 25;
+    }
+
+    #mobileControls {
+      margin-top: 15px;
+    }
+
+    #mobileControls button {
+      font-size: 30px;
+      width: 60px;
+      height: 60px;
+      margin: 5px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255,192,203, 0.8);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(255,105,180,0.7);
+    }
+
+    #mobileControls button:active {
+      background: rgba(255,105,180,1);
+    }
+
+    #finalMessage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: white;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border: 2px solid pink;
+      border-radius: 10px;
+      display: none;
+      z-index: 50;
+    }
+    
+    #messageOverlay.visible,
+    #blurOverlay.visible {
+    display: block;
+    }
+
+  </style>
+</head>
+<body>
+
+<h1> for the love of my life </h1>
+
+<div id="gameContainer">
+  <canvas id="game" width="480" height="480"></canvas>
+
+  <div id="photoPopup">
+    <img id="photoImage" src="" alt="Note photo" />
+  </div>
+
+  <div id="blurOverlay"></div>
+
+  <div id="messageOverlay">
+    <p id="messageText"></p>
+    <button id="closeButton">×</button>
+  </div>
+
+  <div id="finalMessage">This is an appreciation for my love, Thaqif ❤️</div>
+</div>
+
+<div id="mobileControls">
+  <button id="upBtn">↑</button><br />
+  <button id="leftBtn">←</button>
+  <button id="downBtn">↓</button>
+  <button id="rightBtn">→</button>
+</div>
+
+<audio id="ambientMusic" src="ambient.mp3" loop autoplay></audio>
+
+<script src="notehunt.js"></script>
+
+</body>
+</html>
