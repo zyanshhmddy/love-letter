@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
@@ -157,7 +156,7 @@ function showMessageAndPhoto(text, imgSrc) {
       document.getElementById("messageText").textContent = text; // set text inside <p>
       messageOverlay.classList.add("visible");
       closePopupBtn.classList.add("visible");
-    }, 800);
+    }, 400);
   };
 }
 
@@ -341,4 +340,3 @@ function hideFinalAppreciation() {
 closeFinalBtn.addEventListener("click", () => {
   hideFinalAppreciation();
 });
-
