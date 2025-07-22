@@ -156,7 +156,7 @@ function showMessageAndPhoto(text, imgSrc) {
       document.getElementById("messageText").textContent = text; // set text inside <p>
       messageOverlay.classList.add("visible");
       closePopupBtn.classList.add("visible");
-    }, 800);
+    }, 400);
   };
 }
 
