@@ -2,185 +2,162 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>for the love of my life</title>
-  <link rel="preload" href="SFPRODISPLAYMEDIUM.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>For the Love of My Life</title>
+  <link rel="preload" href="SFPRODISPLAYMEDIUM.ttf" as="font" type="font/ttf" crossorigin>
   <style>
     @font-face {
       font-family: 'SF Pro Display';
       src: url('SFPRODISPLAYMEDIUM.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
     }
 
     body {
       margin: 0;
-      background: #1a1a1a;
-      color: white;
-      font-family: 'SF Pro Display', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      height: 100vh;
+      padding: 0;
+      background: black;
       overflow: hidden;
-      user-select: none;
-    }
-
-    h1 {
-      margin-top: 10px;
-      font-weight: normal;
-    }
-
-    #gameContainer {
-      position: relative;
-    }
-
-    canvas {
-      background: #2e2e2e;
-      display: block;
-      margin: 0 auto;
-      border: 3px solid pink;
-    }
-
-    #photoPopup {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.8);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 1s ease, transform 1s ease;
-      z-index: 10;
-    }
-
-    #photoPopup.visible {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    #photoPopup img {
-      max-width: 220px;
-      max-height: 220px;
-      display: block;
-      border-radius: 10px;
-    }
-
-    #blurOverlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      backdrop-filter: blur(5px) brightness(0.6);
-      z-index: 15;
-      display: none;
-    }
-
-    #messageOverlay {
-      position: absolute;
-      top: 60%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      font-family: 'SF Pro Display', sans-serif;
       color: white;
-      font-size: 24px;
       text-align: center;
-      max-width: 80vw;
-      z-index: 20;
-      display: none;
     }
 
-    #closeButton {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 28px;
-      height: 28px;
-      background: pink;
+    #game {
+      width: 100vw;
+      height: 100vw;
+      max-width: 400px;
+      max-height: 400px;
+      display: block;
+      margin: 20px auto 10px;
+      image-rendering: pixelated;
+    }
+
+    #mobile-controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    #mobile-controls button {
+      font-size: 20px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: none;
+      background-color: pink;
       color: white;
       font-weight: bold;
-      font-size: 18px;
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      z-index: 25;
-    }
-
-    #mobileControls {
-      margin-top: 15px;
-    }
-
-    #mobileControls button {
-      font-size: 30px;
-      width: 60px;
-      height: 60px;
-      margin: 5px;
-      border-radius: 10px;
-      border: none;
-      background: rgba(255,192,203, 0.8);
-      color: white;
-      font-weight: bold;
-      box-shadow: 0 0 10px rgba(255,105,180,0.7);
-    }
-
-    #mobileControls button:active {
-      background: rgba(255,105,180,1);
     }
 
     #finalMessage {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 24px;
-      color: white;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      border: 2px solid pink;
-      border-radius: 10px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.85);
       display: none;
-      z-index: 50;
-    }
-    
-    #messageOverlay.visible,
-    #blurOverlay.visible {
-    display: block;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
     }
 
+    #carousel {
+      display: flex;
+      overflow: hidden;
+      width: 90vw;
+      max-width: 360px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    #carousel img {
+      width: 100%;
+      border-radius: 12px;
+      animation: fade 1.5s ease-in-out;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .popup {
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 18px;
+      max-width: 90vw;
+    }
   </style>
 </head>
 <body>
+  <canvas id="game" width="400" height="400"></canvas>
 
-<h1> for the love of my life </h1>
-
-<div id="gameContainer">
-  <canvas id="game" width="480" height="480"></canvas>
-
-  <div id="photoPopup">
-    <img id="photoImage" src="" alt="Note photo" />
+  <div id="mobile-controls">
+    <button onclick="move('up')">↑</button>
+    <button onclick="move('left')">←</button>
+    <button onclick="move('down')">↓</button>
+    <button onclick="move('right')">→</button>
   </div>
 
-  <div id="blurOverlay"></div>
-
-  <div id="messageOverlay">
-    <p id="messageText"></p>
-    <button id="closeButton">×</button>
+  <div id="finalMessage">
+    <div id="carousel">
+      <img id="carouselImage" src="img1.jpg" alt="Love Memory" />
+    </div>
+    <div class="popup">This is an appreciation for my love. Thank you.</div>
   </div>
 
-  <div id="finalMessage">This is an appreciation for my love, Thaqif ❤️</div>
-</div>
+  <audio id="ambient" src="ambient.mp3" loop autoplay></audio>
+  <audio id="finalSong" src="berdua.mp3"></audio>
 
-<div id="mobileControls">
-  <button id="upBtn">↑</button><br />
-  <button id="leftBtn">←</button>
-  <button id="downBtn">↓</button>
-  <button id="rightBtn">→</button>
-</div>
+  <script src="notehunt.js"></script>
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
 
-<audio id="ambientMusic" src="ambient.mp3" loop autoplay></audio>
+    function resizeCanvas() {
+      const size = Math.min(window.innerWidth, 400);
+      canvas.style.width = `${size}px`;
+      canvas.style.height = `${size}px`;
+    }
 
-<script src="notehunt.js"></script>
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
 
+    function move(dir) {
+      const keyboardMap = {
+        up: 'ArrowUp',
+        down: 'ArrowDown',
+        left: 'ArrowLeft',
+        right: 'ArrowRight'
+      };
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: keyboardMap[dir] }));
+    }
+
+    // Handle final popup trigger from game when all notes are collected:
+    function showFinalPopup() {
+      document.getElementById('finalMessage').style.display = 'flex';
+      document.getElementById('ambient').pause();
+      document.getElementById('finalSong').play();
+
+      // Carousel cycle logic
+      const images = ['img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 'img5.jpg', 'img6.jpg'];
+      let index = 0;
+      const carousel = document.getElementById('carouselImage');
+
+      setInterval(() => {
+        index = (index + 1) % images.length;
+        carousel.src = images[index];
+      }, 2000);
+    }
+
+    // Expose showFinalPopup to global so notehunt.js can call it
+    window.showFinalPopup = showFinalPopup;
+  </script>
 </body>
 </html>
