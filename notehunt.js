@@ -283,7 +283,7 @@ carouselImage.style.objectFit = "cover";
 carouselImage.style.marginBottom = "15px";
 
 const carouselText = document.createElement("p");
-carouselText.textContent = "This is an appreciation for my love. Thank you.";
+carouselText.textContent = "this is an appreciation for you. thank you for always being here. i love you! :D ";
 carouselText.style.fontSize = "18px";
 carouselText.style.marginBottom = "15px";
 
